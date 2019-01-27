@@ -42,6 +42,9 @@ while true; do
     else
         /system/sdcard/bin/getimage | /system/sdcard/bin/jpegoptim -m"$COMPRESSION_QUALITY" --stdin --stdout > "$SAVE_DIR/$filename" &
     fi
+    if [ "$publish_mqtt_snapshot" = true ] ; then
+    	/system/sdcard/bin/mosquitto_pub.bin -h "$HOST" -p "$PORT" -u "$USER" -P "$PASS" -t "${TOPIC}"/timelapse/snapshot ${MOSQUITTOOPTS} ${MOSQUITTOPUBOPTS} -f "$SAVE_DIR/$filename"
+    fi
     sleep $TIMELAPSE_INTERVAL
 
     if [ $TIMELAPSE_DURATION -gt 0 ]; then
